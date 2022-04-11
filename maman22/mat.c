@@ -4,7 +4,7 @@
 
 
 #define SIZE 4
-#define MAX_LEN 256
+#define MAX_LEN 512
 #define NUM_OF_MATS 7
 
 
@@ -12,51 +12,41 @@ typedef int matrix[SIZE][SIZE];
 
 matrix a, b, c, d, e, f;
 
-const char* mats_name[7] = {"MAT_A","MAT_B","MAT_C","MAT_D","MAT_E","MAT_F","#"}; 
-matrix* mats = { a, b, c, d, e, f};
+const char* mats_name[NUM_OF_MATS] = { "MAT_A","MAT_B","MAT_C","MAT_D","MAT_E","MAT_F","#" }; 
+matrix* mats = { a, b, c, d, e, f };
 
 
-/* STOP Function */
-void stop(){
-    exit(0);
-}
 
-void mul_mat(char* line , int* ptr_curr){
-    int curr = *ptr_curr, i, j, k, mat1, mat2, mat3;
+/* READ_MAT Method:
+* get line of char aand extract the name of the the matrix and the parameters
+* and set the params in the mat.
+*/
+void read_mat(char *line , int* ptr_curr){
+    int curr = *ptr_curr, i;
     char name[MAX_LEN];
     
-
-    mat1 = get_mat(line, &curr);
-    mat2 = get_mat(line, &curr);
-    mat3 = get_mat(line, &curr);
-    
-    for(i = 0; i < SIZE; ++i){
-        for(j = 0; j < SIZE; ++j){
-            for(k = 0; k < SIZE; ++k) {
-                mats[mat3][i][j] += mats[mat1][i][k] * mats[mat2][k][j];
-            }
-        }
-    }
-    
+    printf("1\n");
+    i = get_mat(line, &curr);/*  return the num of the matrix in the mats array (char*) */
+    printf("2\n");
+    get_parameters(line, &mats[i], &curr);
+    printf("3\n");
     *ptr_curr = curr;
-    
 }
 
-
-void sub_mat(char* line , int* ptr_curr){
-    int curr = *ptr_curr, i, j, mat1, mat2, mat3;
+/* i can fix the double code here and in read_mat func.. */
+void print_mat(char* line, int* ptr_curr){
+    int curr = *ptr_curr, mat_index, i, j;
     char name[MAX_LEN];
+
+    mat_index = get_mat(line, &curr);
     
-    mat1 = get_mat(line, name, &curr);
-    mat2 = get_mat(line, name, &curr);
-    mat3 = get_mat(line, name, &curr);
-    
-    for(i = 0; i < SIZE; i++) {
-        for(j = 0; j < SIZE; j++) {
-            mats[mat3][i][j] = (mats[mat1][i][j] - mats[mat2][i][j]);
+    for(i = 0; i < SIZE; i++){
+        for(j = 0; j <SIZE; j++){
+            printf("%d   ", mats[mat_index][i][j]);
         }
+        printf("\n");
     }
-    
+
     *ptr_curr = curr;
 }
 
@@ -79,6 +69,61 @@ void add_mat(char* line , int* ptr_curr){
     *ptr_curr = curr;
 }
 
+void sub_mat(char* line , int* ptr_curr){
+    int curr = *ptr_curr, i, j, mat1, mat2, mat3;
+    char name[MAX_LEN];
+    
+    mat1 = get_mat(line, name, &curr);
+    mat2 = get_mat(line, name, &curr);
+    mat3 = get_mat(line, name, &curr);
+    
+    for(i = 0; i < SIZE; i++) {
+        for(j = 0; j < SIZE; j++) {
+            mats[mat3][i][j] = (mats[mat1][i][j] - mats[mat2][i][j]);
+        }
+    }
+    
+    *ptr_curr = curr;
+}
+
+void mul_mat(char* line , int* ptr_curr){
+    int curr = *ptr_curr, i, j, k, mat1, mat2, mat3;
+    char name[MAX_LEN];
+    
+
+    mat1 = get_mat(line, &curr);
+    mat2 = get_mat(line, &curr);
+    mat3 = get_mat(line, &curr);
+    
+    for(i = 0; i < SIZE; ++i){
+        for(j = 0; j < SIZE; ++j){
+            for(k = 0; k < SIZE; ++k) {
+                mats[mat3][i][j] += mats[mat1][i][k] * mats[mat2][k][j];
+            }
+        }
+    }
+    
+    *ptr_curr = curr;
+}
+
+/*  TO DO !!!  */ 
+void mul_scalar(char* line, int *ptr_curr){
+    int curr = *ptr_curr, i , j, mat1, mat2, scalar = 1;
+    
+    *ptr_curr = curr;
+}
+/* To - DO  */
+void trans_mat(char* line , int* ptr_curr){
+    int curr = *ptr_curr, i
+}
+
+/* STOP  Method - close the program*/
+void stop(){
+    exit(0);
+}
+
+/***********************************************/
+/***********************************************/
 
 int get_mat(char* line , int* ptr_curr){
     int curr = *ptr_curr, i;
@@ -101,28 +146,6 @@ int get_mat(char* line , int* ptr_curr){
 }
 
 
-/* print mat for Debug */
-void print_mat_debbug(int mat[SIZE][SIZE]){
-    int i, j;
-    for(i = 0; i < SIZE; i++){
-        for(j = 0; j <SIZE; j++){
-            printf("%d   ", mat[i][j]);
-        }
-        printf("\n");
-    }
-}
-/* i can fix the double code here and in read_mat func.. */
-void print_mat(char* line, int* ptr_curr){
-    int curr = *ptr_curr, i;
-    char name[MAX_LEN];
-
-    i = get_mat(line, &curr);
-    
-    print_mat_debbug(mats[i]);
-
-    *ptr_curr = curr;
-}
-
 /* get ech parameter from line */
 int get_number(char* line, int* ptr_curr){
     int curr = *ptr_curr, j;
@@ -138,19 +161,7 @@ int get_number(char* line, int* ptr_curr){
     return atoi(num);
 }
 
-/* not finished   -   need to add matrix chose and insert the parameters.  */
-void read_mat(char *line , int* ptr_curr){
-    int curr = *ptr_curr, i;
-    char name[MAX_LEN];
-    
-    i = get_mat(line, &curr);
-    
-    get_parameters(line, &mats[i], &curr);
-    print_mat_debbug(mats[i]);
 
-    
-    *ptr_curr = curr;
-}
 
 /* get parameters for the matrix */
 void get_parameters(char* line, int mat[SIZE][SIZE] ,int *ptr_curr){
@@ -174,29 +185,7 @@ void get_parameters(char* line, int mat[SIZE][SIZE] ,int *ptr_curr){
 }
 
 
-/*  TO DO !!!  */ 
-void mul_scalar(char* line, int *ptr_curr){
-    int curr = *ptr_curr, i , j, mat1, mat2, scalar = 1;
-    
-    mat1 = get_mat(line, &curr);
-    get_comma(line, &curr);
-    go_head(line, &curr);
-    scalar = get_number(line, &curr);
-    get_comma(line, &curr);
-    go_head(line, &curr);
-    mat2 = get_mat(line, &curr);
-    printf("%d", mat2);
-    
-    printf("3\n");
-    for(i = 0; i < SIZE; i++){
-        for(j = 0; j < SIZE; j++){
-            mats[mat2][i][j] = mats[mat1][i][j] * scalar;
-        }
-    }
-    
-    
-    *ptr_curr = curr;
-}
+
 
 void go_head(char* line ,int *ptr_curr){
     int curr = *ptr_curr;

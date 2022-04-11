@@ -1,4 +1,3 @@
-
 #ifndef ITEM_LIST_H
 #define ITEM_LIST_H
 
@@ -10,22 +9,20 @@
 
 #define SIZE 4
 #define NUM_OF_MAT 6
-#define MAX_LEN 1000
+#define MAX_LEN 512
 
-
-enum { NO, YES };
-
-
+void read_mat(char*, int*);
+void print_mat(char*, int*);
+void add_mat(char*, int*);
+void sub_mat(char*, int*);
+void mul_mat(char*, int*);
+void mul_scalar(char*, int*);
+void trans_mat(char*, int*);
 void stop();
-void add_mat(char* line , int* ptr_curr);
-void read_mat(char *line , int* ptr_curr);
-void print_mat(char* line, int* ptr_curr);
-void mul_mat(char* line , int* ptr_curr);
-void mul_scalar(char* line, int *ptr_curr);
-void print_mat_debbug(int mat[SIZE][SIZE]);
-int get_mat(char* line, int* ptr_curr);
-void get_parameters(char *line, int mat[4][4] ,int *ptr_curr);
-void go_head(char* line ,int *ptr_curr);
+
+int get_mat(char*, int*);
+void get_parameters(char*, int mat[SIZE][SIZE] ,int*);
+void go_head(char* ,int*);
 
 
 #endif // !
