@@ -8,21 +8,30 @@
 
 
 #define SIZE 4
-#define NUM_OF_MAT 6
+#define NUM_OF_MATS 6
 #define MAX_LEN 512
 
-void read_mat(char*, int*);
-void print_mat(char*, int*);
-void add_mat(char*, int*);
-void sub_mat(char*, int*);
-void mul_mat(char*, int*);
-void mul_scalar(char*, int*);
-void trans_mat(char*, int*);
+
+
+
+
+void read_mat(char *line , int* ptr_curr);
+void print_mat(char* line, int* ptr_curr);
+void add_mat(char* line , int* ptr_curr);
+void sub_mat(char* line , int* ptr_curr);
+void mul_mat(char* line , int* ptr_curr);
+void mul_scalar(char* line, int *ptr_curr);
+void trans_mat(char* line , int* ptr_curr);
 void stop();
 
-int get_mat(char*, int*);
-void get_parameters(char*, int mat[SIZE][SIZE] ,int*);
-void go_head(char* ,int*);
+/*
+mat_ptr create_mat();
+void generate_mats();
+void free_mat(mat_ptr ptr);
+*/
+
+
+
 
 
 #endif // !

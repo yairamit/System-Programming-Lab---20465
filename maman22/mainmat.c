@@ -2,82 +2,122 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+
 #include "mat.h"
 
-
-void get_next_word(char*, char word[], int*);
-int get_comma(char* , int*);
-int get_number(char* , int*);
-
+#define MAX_LEN 512
+#define NUM_OF_MATS 6
+#define SIZE 4
 
 
-int main() {
-    printf("\nSTART:\n\n");
-    int curr, i;
+const char* mats_name[NUM_OF_MATS] = { "MAT_A","MAT_B","MAT_C","MAT_D","MAT_E","MAT_F" };
+
+void parse_line();
+void go_head(char* line ,int *ptr_curr);
+int get_mat(char* line , int* ptr_curr);
+void get_next_word(char* line, char word[], int* ptr_curr);
+int get_comma(char* line, int *ptr_curr);
+void get_number(char* line,char num[], int* ptr_curr);
+
+
+void main(){
+    
+    
+    printf("\n----START----\n\n");
+    
+    
+    
+    
+    generate_mats();
+    parse_line();
+    
+    
+}
+
+
+void parse_line(){
     char line[MAX_LEN];
     char word[MAX_LEN];
+    int curr;
     
+    printf("\n----PARSE----\n");
     
     while(fgets(line , MAX_LEN, stdin)){
-        puts(line);
         curr = 0;
-        printf("1\n");
         get_next_word(line, word, &curr);
-        printf("2\n");
-        puts(word);
+        
         if(!strcmp("read_mat", word)){
             read_mat(line, &curr);
         }
+        
         else if(!strcmp("print_mat", word)){
             print_mat(line, &curr);
         }
+        
         else if(!strcmp("add_mat", word)){
             add_mat(line, &curr);
         }
+        
         else if(!strcmp("sub_mat", word)){
             sub_mat(line, &curr);
         }
-        else if (!strcmp("mul_mat", word)){
+        
+        else if(!strcmp("mul_mat", word)){
             mul_mat(line, &curr);
         }
-        else if (!strcmp("mul_scalar", word)){
-            mul_mat(line, &curr);
+        
+        else if(!strcmp("mul_scalar", word)){
+            mul_scalar(line, &curr);
         }
-        else if (!strcmp("trans_mat", word)){
+        
+        else if(!strcmp("trans_mat", word)){
             trans_mat(line, &curr);
         }
-        else if(!strcmp("stop", word)){
+        
+        else if(!strcmp("stop" , word)){
             stop();
         }
         
-        printf("\nEnter comand: \n");
+        else{
+            printf("Command not found. try again  or stop\n");
+            continue;
+        }
+        
     }
-    return 0;
 }
 
+/*****************************************************
+        *     parsers -  methods      *
+*****************************************************/
 
- /* params in line should saparate by comma*/ 
- int get_comma(char* line, int *ptr_curr){
+
+
+void go_head(char* line ,int *ptr_curr){
     int curr = *ptr_curr;
-    int comma = 0;
-    
-    go_head(line, &curr);
-	
-	if(line[curr] == ','){
-	    curr++;
-	    comma = 1;
-	}
-	
-	go_head(line, &curr);
-	
+    while( isspace(line[curr]) && line[curr] != '\n')
+		curr++;
 	*ptr_curr = curr;
 }
 
+int get_mat(char* line , int* ptr_curr){
+    int curr = *ptr_curr, i;
+    char word[MAX_LEN];
+    
+    get_next_word(line, word, &curr);
+    for(i = 0; i < NUM_OF_MATS; i++){
+        if(strcmp(word, mats_name[i]) == 0)
+            break;
+    }
+    if(i == NUM_OF_MATS){
+        printf("mat: %s does not exit. exit.\n", word);
+        exit(0);
+    }
+    else{
+        *ptr_curr = curr;
+        return i;
+    }
+}
 
-/* get_next_word for func name and mat name:
-* run on line of char and extract the next word.
-* (there is another func for numbers and param's.)
-*/
 void get_next_word(char* line, char word[], int* ptr_curr){
     int curr = *ptr_curr, j; 
     
@@ -93,6 +133,35 @@ void get_next_word(char* line, char word[], int* ptr_curr){
 }
 
 
+
+
+int get_comma(char* line, int *ptr_curr){
+    int curr = *ptr_curr;
+    int comma = 0;
+    
+    go_head(line, &curr);
+	
+	if(line[curr] == ','){
+	    curr++;
+	    comma = 1;
+	}
+	
+	go_head(line, &curr);
+	
+	*ptr_curr = curr;
+}
+
+void get_number(char* line,char num[], int* ptr_curr){
+    int curr = *ptr_curr, j;
+
+    for(j = 0; !isspace(line[curr]) && line[curr] != '\n' && (isalnum(line[curr]) || line[curr] == '.' ); curr++)
+		num[j++] = line[curr];
+	num[j] = '\0';
+
+    go_head(line, &curr);
+    *ptr_curr = curr;
+
+}
 
 
 

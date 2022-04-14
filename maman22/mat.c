@@ -1,68 +1,85 @@
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 
-
-#define SIZE 4
 #define MAX_LEN 512
-#define NUM_OF_MATS 7
-
-
-typedef int matrix[SIZE][SIZE];
-
-matrix a, b, c, d, e, f;
-
-const char* mats_name[NUM_OF_MATS] = { "MAT_A","MAT_B","MAT_C","MAT_D","MAT_E","MAT_F","#" }; 
-matrix* mats = { a, b, c, d, e, f };
+#define NUM_OF_MATS 6
+#define SIZE 4
 
 
 
-/* READ_MAT Method:
-* get line of char aand extract the name of the the matrix and the parameters
-* and set the params in the mat.
-*/
+typedef struct matrix {
+    double** m;
+} matrix;
+
+
+typedef struct matrix * mat_ptr;
+
+
+mat_ptr mats[NUM_OF_MATS];
+
+
+/*****************************************************
+        *      matrix - methods      *
+*****************************************************/
+
 void read_mat(char *line , int* ptr_curr){
-    int curr = *ptr_curr, i;
-    char name[MAX_LEN];
+    int curr = *ptr_curr;
+    int i = 0, j, k = 0, mat_index;
+    char num[MAX_LEN];
+    double arr[SIZE*SIZE];
     
-    printf("1\n");
-    i = get_mat(line, &curr);/*  return the num of the matrix in the mats array (char*) */
-    printf("2\n");
-    get_parameters(line, &mats[i], &curr);
-    printf("3\n");
+    mat_index = get_mat(line, &curr);
+    
+    while(i < 16){
+        if(get_comma(line, &curr)){
+            get_number(line, &num ,&curr);
+            arr[i] = atof(num);
+            i += 1;
+            
+        }
+        else 
+            break;
+    }
+
+    for(i = 0; i < SIZE; i++)
+            for ( j = 0 ; j < SIZE; j++)
+                mats[mat_index]->m[i][j] = arr[k++];
+    
     *ptr_curr = curr;
 }
 
-/* i can fix the double code here and in read_mat func.. */
+
+
 void print_mat(char* line, int* ptr_curr){
     int curr = *ptr_curr, mat_index, i, j;
     char name[MAX_LEN];
-
+    
     mat_index = get_mat(line, &curr);
     
-    for(i = 0; i < SIZE; i++){
-        for(j = 0; j <SIZE; j++){
-            printf("%d   ", mats[mat_index][i][j]);
-        }
-        printf("\n");
-    }
+    for(i=0; i < SIZE; i=i+1){
+		for(j=0; j < SIZE; j= j+1){
+			printf("%8.2f", *(*((mats[mat_index]->m)+i)+j));
+		}
+		printf("\n");
+	}
 
     *ptr_curr = curr;
 }
+
 
 void add_mat(char* line , int* ptr_curr){
     int curr = *ptr_curr, i, j, mat1, mat2, mat3;
     char name[MAX_LEN];
     
     mat1 = get_mat(line, &curr);
-    
     mat2 = get_mat(line, &curr);
-
     mat3 = get_mat(line, &curr);
     
     for(i = 0; i < SIZE; i++) {
         for(j = 0; j < SIZE; j++) {
-            mats[mat3][i][j] = (mats[mat1][i][j] + mats[mat2][i][j]);
+            mats[mat3]->m[i][j] = (mats[mat1]->m[i][j] + mats[mat2]->m[i][j]);
         }
     }
     
@@ -79,7 +96,7 @@ void sub_mat(char* line , int* ptr_curr){
     
     for(i = 0; i < SIZE; i++) {
         for(j = 0; j < SIZE; j++) {
-            mats[mat3][i][j] = (mats[mat1][i][j] - mats[mat2][i][j]);
+            mats[mat3]->m[i][j] = (mats[mat1]->m[i][j] - mats[mat2]->m[i][j]);
         }
     }
     
@@ -89,7 +106,6 @@ void sub_mat(char* line , int* ptr_curr){
 void mul_mat(char* line , int* ptr_curr){
     int curr = *ptr_curr, i, j, k, mat1, mat2, mat3;
     char name[MAX_LEN];
-    
 
     mat1 = get_mat(line, &curr);
     mat2 = get_mat(line, &curr);
@@ -98,7 +114,7 @@ void mul_mat(char* line , int* ptr_curr){
     for(i = 0; i < SIZE; ++i){
         for(j = 0; j < SIZE; ++j){
             for(k = 0; k < SIZE; ++k) {
-                mats[mat3][i][j] += mats[mat1][i][k] * mats[mat2][k][j];
+                mats[mat3]->m[i][j] += mats[mat1]->m[i][k] * mats[mat2]->m[k][j];
             }
         }
     }
@@ -106,90 +122,102 @@ void mul_mat(char* line , int* ptr_curr){
     *ptr_curr = curr;
 }
 
-/*  TO DO !!!  */ 
+
 void mul_scalar(char* line, int *ptr_curr){
-    int curr = *ptr_curr, i , j, mat1, mat2, scalar = 1;
+    int curr = *ptr_curr, i , j, mat1, mat2;
+    double scalar = 1;
+    char float_word[MAX_LEN];
     
-    *ptr_curr = curr;
-}
-/* To - DO  */
-void trans_mat(char* line , int* ptr_curr){
-    int curr = *ptr_curr, i
-}
-
-/* STOP  Method - close the program*/
-void stop(){
-    exit(0);
-}
-
-/***********************************************/
-/***********************************************/
-
-int get_mat(char* line , int* ptr_curr){
-    int curr = *ptr_curr, i;
-    char word[MAX_LEN];
-    
-    get_next_word(line, word, &curr);
-    for(i = 0; i < NUM_OF_MATS; i++){
-        if(strcmp(word, mats_name[i]) == 0)
-            break;
-    }
-    if(i == NUM_OF_MATS){
-        printf("mat: %s does not exit. exit.\n", word);
-        exit(0);
-    }
-    else{
-        printf("%s\n", mats_name[i]);
-        *ptr_curr = curr;
-        return i;
-    }
-}
-
-
-/* get ech parameter from line */
-int get_number(char* line, int* ptr_curr){
-    int curr = *ptr_curr, j;
-    char * c;
-    char num[MAX_LEN];
-    
-    for(j = 0; !isspace(line[curr]) && line[curr] != '\n' && isalnum(line[curr]) ; curr++)
-		num[j++] = line[curr];
-	num[j] = '\0';
     go_head(line, &curr);
-    /*printf("%d", atoi(num));*/
-    *ptr_curr = curr;
-    return atoi(num);
-}
-
-
-
-/* get parameters for the matrix */
-void get_parameters(char* line, int mat[SIZE][SIZE] ,int *ptr_curr){
-    int i = 0, j, k = 0, curr = *ptr_curr;
-    int arr[SIZE*SIZE] = {0};
+    mat1 = get_mat(line, &curr);
+    get_number(line, float_word,&curr);
+    scalar = atof(float_word);
     
-    while(i < SIZE*SIZE){
-        if(get_comma(line, &curr)){
-            arr[i] = get_number(line, &curr);
-            i += 1;
-        }
-        else 
-            break;
-        
-    }
+    mat2 = get_mat(line, &curr);
+    
     for(i = 0; i < SIZE; i++){
-            for ( j = 0 ; j < SIZE; j++)
-                mat[i][j] = arr[k++];
+        for(j = 0; j < SIZE; j++){
+            mats[mat2]->m[i][j] = scalar * mats[mat1]->m[i][j];
+        }
     }
     
+    *ptr_curr = curr;
+}
+
+void trans_mat(char* line , int* ptr_curr){
+    int curr = *ptr_curr, i, j, mat1, mat2;
+    mat1 = get_mat(line, &curr);
+    mat2 = get_mat(line, &curr);
+    /*
+    for(i = 0; i <SIZE; i++) {
+        for (j = 0; j < SIZE; j++){
+            mats[mat2]->[i][j] = mats[mat1]->[j][i];
+        }
+    }
+    */
+    *ptr_curr = curr;
+}
+
+void stop(){
+    int i;
+	for(i = 0; i < NUM_OF_MATS; i++){
+		free_mat(mats[i]);
+	}
+	printf("\n---Bye---\n");
+	exit(0);
 }
 
 
 
-
-void go_head(char* line ,int *ptr_curr){
-    int curr = *ptr_curr;
-    while( isspace(line[curr]) && line[curr] != '\n')
-		curr++;
-	*ptr_curr = curr;
+/*****************************************************
+        *      start-func methods      *
+*****************************************************/
+mat_ptr create_mat(){
+    int i , j;
+    mat_ptr new_mat;
+    new_mat = (matrix*)malloc(sizeof(matrix));
+    
+    if(new_mat){
+        new_mat->m = (double**) calloc (SIZE, sizeof(double*));
+        
+        if(new_mat->m){
+            for(i = 0; i < SIZE ; i++) {
+                *((new_mat->m)+i) = (double*) calloc (SIZE, sizeof(double));
+                
+                if(!(*((new_mat->m)+i))){
+                    for (j = 0; j < i; j++){
+                        free(*((new_mat->m)+j));
+                    }
+                    return NULL;
+                }
+            }
+        } else {
+            free(new_mat);
+            return NULL;
+        }
+    }
+    return new_mat;
 }
+
+void generate_mats(){
+    int i, j;
+    for(i = 0; i < NUM_OF_MATS; i++){
+            mats[i] = create_mat();
+            if(!mats[i]){
+                printf("memory allocation failed. exit program.\n");
+                for(j = 0; j < i; j++){
+                    free_mat(mats[j]);
+                }
+                exit(0);
+            }
+    }
+}
+
+void free_mat(mat_ptr ptr){
+	int i;
+	for(i = 0; i < SIZE; i++){
+		free(*((ptr->m)+i));
+	}
+	free(ptr);
+}
+
