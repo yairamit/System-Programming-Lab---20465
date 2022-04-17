@@ -9,6 +9,7 @@
 
 
 
+
 typedef struct matrix {
     double** m;
 } matrix;
@@ -127,8 +128,7 @@ void mul_scalar(char* line, int *ptr_curr){
     int curr = *ptr_curr, i , j, mat1, mat2;
     double scalar = 1;
     char float_word[MAX_LEN];
-    
-    go_head(line, &curr);
+
     mat1 = get_mat(line, &curr);
     get_number(line, float_word,&curr);
     scalar = atof(float_word);
@@ -220,4 +220,3 @@ void free_mat(mat_ptr ptr){
 	}
 	free(ptr);
 }
-

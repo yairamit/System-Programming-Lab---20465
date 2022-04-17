@@ -46,7 +46,10 @@ void parse_line(){
         curr = 0;
         get_next_word(line, word, &curr);
         
-        if(!strcmp("read_mat", word)){
+        if(!strcmp("", word))
+            continue;
+        
+        else if(!strcmp("read_mat", word)){
             read_mat(line, &curr);
         }
         
@@ -79,7 +82,7 @@ void parse_line(){
         }
         
         else{
-            printf("Command not found. try again  or stop\n");
+            printf("Undefined command name.\n");
             continue;
         }
         
@@ -109,8 +112,8 @@ int get_mat(char* line , int* ptr_curr){
             break;
     }
     if(i == NUM_OF_MATS){
-        printf("mat: %s does not exit. exit.\n", word);
-        exit(0);
+        printf("Undefined matrix name");
+        /* TODO exit func*/
     }
     else{
         *ptr_curr = curr;
@@ -154,7 +157,7 @@ int get_comma(char* line, int *ptr_curr){
 void get_number(char* line,char num[], int* ptr_curr){
     int curr = *ptr_curr, j;
 
-    for(j = 0; !isspace(line[curr]) && line[curr] != '\n' && (isalnum(line[curr]) || line[curr] == '.' ); curr++)
+    for(j = 0; !isspace(line[curr]) && line[curr] != '\n' && ( isalnum(line[curr]) || line[curr] == '.' || line[curr] == '-' ); curr++)
 		num[j++] = line[curr];
 	num[j] = '\0';
 
@@ -162,6 +165,3 @@ void get_number(char* line,char num[], int* ptr_curr){
     *ptr_curr = curr;
 
 }
-
-
-
