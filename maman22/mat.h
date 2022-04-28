@@ -1,7 +1,6 @@
 #ifndef ITEM_LIST_H
 #define ITEM_LIST_H
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
@@ -14,15 +13,14 @@
 
 
 
-
 void read_mat(char *line , int* ptr_curr);
 void print_mat(char* line, int* ptr_curr);
 void add_mat(char* line , int* ptr_curr);
 void sub_mat(char* line , int* ptr_curr);
 void mul_mat(char* line , int* ptr_curr);
-void mul_scalar(char* line, int *ptr_curr);
+void scalar_mat(char* line, int *ptr_curr);
 void trans_mat(char* line , int* ptr_curr);
-void stop();
+void stop(char* line , int* ptr_curr);
 
 /*
 mat_ptr create_mat();

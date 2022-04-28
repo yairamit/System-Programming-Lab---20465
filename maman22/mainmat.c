@@ -12,82 +12,70 @@
 
 const char* mats_name[NUM_OF_MATS] = { "MAT_A","MAT_B","MAT_C","MAT_D","MAT_E","MAT_F" };
 
+
+struct {
+	char* name;
+	void (*func)(char* line ,int *ptr_curr);
+} cmd[] = {
+	{"read_mat", read_mat},
+	{"print_mat", print_mat},
+	{"add_mat", add_mat},
+	{"sub_mat", sub_mat},
+	{"mul_mat", mul_mat},
+	{"scalar_mat", scalar_mat},
+	{"trans_mat", trans_mat},
+	{"stop", stop},
+	{"not_valid", NULL}
+};
+
+
 void parse_line();
 void go_head(char* line ,int *ptr_curr);
-int get_mat(char* line , int* ptr_curr);
+int get_mat(char* line , int* ptr_curr, int comma_expacted);
 void get_next_word(char* line, char word[], int* ptr_curr);
-int get_comma(char* line, int *ptr_curr);
+void jump_comma(char* line, int *ptr_curr);
+int check_comma(char* line, int *ptr_curr);
 void get_number(char* line,char num[], int* ptr_curr);
 
 
-void main(){
+int main(){
     
     
-    printf("\n----START----\n\n");
-    
-    
-    
+    printf("\n----START----\n");
     
     generate_mats();
     parse_line();
     
-    
+    return 0;
 }
-
 
 void parse_line(){
     char line[MAX_LEN];
-    char word[MAX_LEN];
-    int curr;
+    char command[MAX_LEN];
+    int curr, i;
     
-    printf("\n----PARSE----\n");
     
+    printf("$: ");
     while(fgets(line , MAX_LEN, stdin)){
         curr = 0;
-        get_next_word(line, word, &curr);
         
-        if(!strcmp("", word))
-            continue;
+        get_next_word(line, command, &curr);
         
-        else if(!strcmp("read_mat", word)){
-            read_mat(line, &curr);
-        }
-        
-        else if(!strcmp("print_mat", word)){
-            print_mat(line, &curr);
-        }
-        
-        else if(!strcmp("add_mat", word)){
-            add_mat(line, &curr);
-        }
-        
-        else if(!strcmp("sub_mat", word)){
-            sub_mat(line, &curr);
-        }
-        
-        else if(!strcmp("mul_mat", word)){
-            mul_mat(line, &curr);
-        }
-        
-        else if(!strcmp("mul_scalar", word)){
-            mul_scalar(line, &curr);
-        }
-        
-        else if(!strcmp("trans_mat", word)){
-            trans_mat(line, &curr);
-        }
-        
-        else if(!strcmp("stop" , word)){
-            stop();
-        }
-        
-        else{
-            printf("Undefined command name.\n");
-            continue;
-        }
-        
+        for (i = 0; cmd[i].func != NULL; i++)
+			    if (strcmp(command, cmd[i].name) == 0)
+					break;
+					
+		if (cmd[i].func == NULL)
+			printf(stderr, "Command does not exit:%s\n", command);
+			
+		else
+			(*(cmd[i].func))(line, &curr);
+			
+		printf("$: ");
     }
 }
+
+
 
 /*****************************************************
         *     parsers -  methods      *
@@ -102,17 +90,31 @@ void go_head(char* line ,int *ptr_curr){
 	*ptr_curr = curr;
 }
 
-int get_mat(char* line , int* ptr_curr){
+int get_mat(char* line , int* ptr_curr, int comma_expacted){
     int curr = *ptr_curr, i;
     char word[MAX_LEN];
     
+    /* extract mat name from line*/
     get_next_word(line, word, &curr);
+    
     for(i = 0; i < NUM_OF_MATS; i++){
         if(strcmp(word, mats_name[i]) == 0)
             break;
     }
+    /*  comma handle. */
+    if(comma_expacted){
+        if(check_comma(line, &curr))
+            jump_comma(line, &curr); 
+        else{
+            printf("Missing Comma.");
+            return -1;
+        }
+    }
+    
+    /* mat num handle. */
     if(i == NUM_OF_MATS){
         printf("Undefined matrix name");
+        return -1;
         /* TODO exit func*/
     }
     else{
@@ -126,8 +128,10 @@ void get_next_word(char* line, char word[], int* ptr_curr){
     
     go_head(line, &curr);
 
-	for(j = 0; !isspace(line[curr]) && line[curr] != '\n'; curr++)
-		word[j++] = line[curr];
+	for(j = 0; !isspace(line[curr]) && line[curr] != '\n' && line[curr] != ','; curr++){
+	        word[j++] = line[curr];
+	}
+		
 	word[j] = '\0';
 
 	go_head(line, &curr);
@@ -135,22 +139,23 @@ void get_next_word(char* line, char word[], int* ptr_curr){
 	*ptr_curr = curr; 
 }
 
-
-
-
-int get_comma(char* line, int *ptr_curr){
-    int curr = *ptr_curr;
-    int comma = 0;
-    
+int check_comma(char* line, int *ptr_curr){
+    int curr = *ptr_curr, comma = 0;;
     go_head(line, &curr);
-	
-	if(line[curr] == ','){
-	    curr++;
+    
+    if(line[curr] == ',')
 	    comma = 1;
-	}
+    return comma;
+}
+
+
+void jump_comma(char* line, int *ptr_curr){
+    int curr = *ptr_curr;
+    go_head(line, &curr);
+	if(line[curr] == ',')
+	    curr++;
 	
 	go_head(line, &curr);
-	
 	*ptr_curr = curr;
 }
 
