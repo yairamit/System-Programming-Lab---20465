@@ -52,7 +52,8 @@ void parse_instruction(char* line, char* command_name,int* ptr_curr, label_list*
 /*
 * count ic and check valid command and operands.
 */
-parse_data(char* line, int* curr);
+void parse_data(char* line,int *ptr_curr);
 int parse_operands(char* line, char* command, int* ptr_curr, label_list* symbols);
+void call_func_to_11(char* line, int l_cnt, label_list* symbols);
 
 #endif

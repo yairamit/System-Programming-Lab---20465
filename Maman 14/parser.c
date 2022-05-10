@@ -86,50 +86,73 @@ void get_next_word(char* line, char* word, int* ptr_curr)
 	*ptr_curr = curr; 
 }
 
+void call_func_to_11(char* line, int l_cnt, label_list* symbols){
+	puts(line);
+	
+}
+
 
 
 void parse_line(char* line, int l_cnt, label_list* symbols)
 {
 	int curr = 0, i;
-	char* first_word,* sec_word;
-	first_word = (char*)malloc(sizeof(char)* LINE_LEN);
-	sec_word = (char*)malloc(sizeof(char)* LINE_LEN);
+	
+	char* first_word = (char*)malloc(sizeof(char)* LINE_LEN);
+	char* sec_word = (char*)malloc(sizeof(char)* LINE_LEN);
+	
 	if(!first_word || !sec_word)
 		fatal_error(ErrorMemoryAlloc);
 	
 	
+	puts(line);
+	print_label_table(symbols);
+	printf("\n\n");
 	if(line[curr] != '\n' && line[curr] != ";") /* comment line */
 	{
 		get_next_word(line, first_word, &curr);
+		/* check if there's a label */
 		if(first_word[strlen(first_word)-1] == ':'){
 			
-			label_flag = 1;
+			label_flag = 1; /*4*/
 			
 			first_word[strlen(first_word)-1] = '\0';
 
 			/* TODO - another func to handle lable. */
 			
 			get_next_word(line, sec_word ,&curr);
-			if(sec_word[0] == '.') {
+			if(sec_word[0] == '.') { /*5*/
 				add_label_to_list(symbols, first_word, ic, 0, 0);
 				parse_data(line,&curr);
 			}
 			else {
+				/* calc before adding the label into the symbol table.*/
 				add_label_to_list(symbols, first_word, ic, 1, 0);
 				parse_instruction(line, sec_word,&curr, symbols);
 			}
 		/* TODO - else if to another word  - no command.. */
-		} else {
 		
-			parse_instruction(line, first_word, &curr, symbols);
-		}
+		} else if(line[0] == '.'){/*8*/
+			if(strcmp(first_word, ".extern") == 0) { /*9*/
+				printf("?\n");
+				/* add all label in ext line. for now its only 1 label per extern command.
+				while(curr < LINE_LEN){
+					get_next_word(line, sec_word ,&curr);
+					if(sec_word != NULL)
+						add_label_to_list(symbols, first_word, 0, 0, 1);
+				// its have problem becouse its try to add clank label to list.
+				}*/
+				get_next_word(line, sec_word ,&curr);
+				add_label_to_list(symbols, sec_word, 0, 0, 1);
+			}
+		/* free memory */
 		free(sec_word);
 		free(first_word);
-	}
+	} /*end comment*/
+	
 }
 
 
-parse_data(char* line,int *ptr_curr){
+void parse_data(char* line,int *ptr_curr){
 	int curr = *ptr_curr, count = 0,i;
 	char* data = (char*)malloc(sizeof(char)* LINE_LEN);
 	if(!data)
@@ -162,7 +185,8 @@ void parse_instruction(char* line, char* command_name,int* ptr_curr, label_list*
 	} 
 	else {
 		for(j = 0; j < cmds[i].numOfOperands; j++){
-			int op_kind = parse_operands(line, cmds[i].name , &curr, symbols);
+			/*int op_kind = parse_operands(line, cmds[i].name , &curr, symbols);*/
+			printf("2\n");
 			/*switch*/
 		}
 		ic += (cmds[i].numOfOperands+1);
@@ -182,20 +206,29 @@ int parse_operands(char* line, char* command, int* ptr_curr, label_list* symbols
 	puts(op);
 	/* check if register */
 	for(i = 0; i <= 8; i++){
+		printf("a\n");/*
 		if(!strcmp(op, registers[i])) {
+			/*ist register.
 			return 1;		
-		}
+		}*/
+		printf("%d\n", i);
 	}
 	/* check if number */
+	printf("b\n");
 	if(op[0] == '#')
 		return 2;
 		
-	else {/*
+	else {
+		printf("1\n");
+		/*
 		label_list* l = symbols;
 		while(l.head != NULL){
 			if(!strcmp(l.head.label, op))
 				return 3;
 			l.head = l.head.next;
 		}*/
+		return 0;
 	}
+	return 0;
 }
+
