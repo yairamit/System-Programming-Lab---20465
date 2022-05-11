@@ -232,3 +232,4 @@ int parse_operands(char* line, char* command, int* ptr_curr, label_list* symbols
 	return 0;
 }
 
+

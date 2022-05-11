@@ -12,7 +12,19 @@ typedef enum {
 } operandType;
 
 
+typedef struct {
+	label_list* Shead; /* Head of symbol table */
+	unsigned int err_count;
+	char* file_name_base;
+	FILE* file;
+	
+	/* Command and data counters. */
+	int line_number;
+	unsigned int IC;
+	unsigned int DC;
+} ParserData;
 
+ParserData parser_data;
 
 
 /*
