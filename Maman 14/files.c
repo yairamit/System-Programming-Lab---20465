@@ -47,37 +47,41 @@ char* get_full_file_name(const char* file_name, char* ending)
 	return file_name_base;
 }
 
+
 void handle_file(const char* file_name, char* mode)
 {
 	char line[LINE_LEN];
-	FILE* fp = open_file(file_name, MainFileEnding ,ReadFile);
+	setParserData();  /* set to default. */
+	
+	parser_data.nameOfFile = (char*)malloc(sizeof(char)*strlen(file_name)+1);
+	if(!parser_data.nameOfFile)
+		fatal_error(ErrorMemoryAlloc);
+
+	strcpy(parser_data.nameOfFile, file_name);
+	
 	/*
 	*	Here should be pre assembler
 	*	and re-open the new file.
-	*	after that we'll build ParserData struc
-	*	to hold the file lists and data like ic,dc ect..
-	
-		parser_data = (ParserData*) malloc (sizeof(ParserData));
-	 
 	*/
+	parser_data.file = open_file(parser_data.nameOfFile, MainFileEnding ,ReadFile);
+	
 	/*until pase 11 */
-	while(fgets(line, LINE_LEN, fp)){
-		/*parser_data.line_counter++;*/
-		/*parse_line(line,0, label_list* symbols);*/
-		puts(line);
+	while(fgets(line, LINE_LEN, parser_data.file)){
+		parser_data.line_number++;
+		parse_line(line);
 	}
 	
-	/*
-	part 2 of first move.
-	while(fgets(line, LINE_LEN, fp)){
+	printf("End of first round of the asm.\n\n");
+	print_label_table(parser_data.Shead);
+	fseek(parser_data.file, 0, SEEK_SET);
+	/*part 2 of first move.
+	while(fgets(line, LINE_LEN,parser_data.file)){
 		puts(line);
-	/*
-		l_cnt++;
-		call_func_to_11(line, 0, symbols);//TODO - change name
-	}
-	*/
+
+		call_func_to_11(line, 0);TODO - change name
+	}*/
 	
-	/*free(parser_data)*/
-	fclose(fp);
+	
+	fclose(parser_data.file);
 }
 

@@ -4,18 +4,14 @@
 #include "list_handling.h"
 #define LINE_LEN 81
 
-typedef enum {
-	immediateOperand,
-	SymbolOperand,
-	RealativeOperand,
-	RegisterOperand
-} operandType;
+typedef enum { immediateOperand, SymbolOperand, RealativeOperand, RegisterOperand} operandType;
+
 
 
 typedef struct {
 	label_list* Shead; /* Head of symbol table */
 	unsigned int err_count;
-	char* file_name_base;
+	char* nameOfFile;
 	FILE* file;
 	
 	/* Command and data counters. */
@@ -54,18 +50,21 @@ void jump_comma(char* line, int *ptr_curr);
 * first parse of the assembler.
 * check ic and dc counters, add symbol to table and looking for bugs in the inputs.
 */
-void parse_line(char* line, int l_cnt, label_list* symbols);
+void parse_line(char* line);
 
 /*
 * count dc and ic for label line with .data or .string.
 */
-void parse_instruction(char* line, char* command_name,int* ptr_curr, label_list* symbols);
+void parse_instruction(char* line, char* command_name,int* ptr_curr);
 
 /*
 * count ic and check valid command and operands.
 */
 void parse_data(char* line,int *ptr_curr);
-int parse_operands(char* line, char* command, int* ptr_curr, label_list* symbols);
-void call_func_to_11(char* line, int l_cnt, label_list* symbols);
+int parse_operands(char* line, char* command, int* ptr_curr);
+void call_func_to_11(char* line, int l_cnt);
+void setParserData();
+void freeParserData();
+
 
 #endif

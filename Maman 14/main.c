@@ -6,13 +6,13 @@
 #include "list_handling.h"
 #include "files.h"
 
-
+#define ReadFile "r"
 
 int main(int argc, char* argv[])
 {
 	int i = 1;
 	for(i = 1; i < argc; i++){
-		handle_file(argv[i], "r");
+		handle_file(argv[i], ReadFile);
 		
 	} if(i < 2){
 		fatal_error(ErrorMissingArgument);
