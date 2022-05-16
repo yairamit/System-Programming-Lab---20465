@@ -26,10 +26,9 @@ void read_mat(char *line , int* ptr_curr){
 		        jump_comma(line, &curr);
 		        
 		        if(!check_comma(line, &curr)){
-		            get_number(line, &num ,&curr);
-		            arr[i] = atof(num);
-		            i += 1;
-		            
+		            	get_number(line, &num ,&curr);
+		            	arr[i] = atof(num);
+		            	i += 1;
 		        }
 		        else{
 		        	free(arr);
@@ -55,21 +54,20 @@ void read_mat(char *line , int* ptr_curr){
 
 
 void print_mat(char* line, int* ptr_curr){
-    int curr = *ptr_curr, mat_index, i, j;
-    char name[MAX_LEN];
+    	int curr = *ptr_curr, mat_index, i, j;
+    	char name[MAX_LEN];
     
-    mat_index = get_mat(line, &curr, COMMA_NOT_EXPACTED);
-    if(mat_index >= 0){
-
-        for(i=0; i < SIZE; i=i+1){
-		    for(j=0; j < SIZE; j= j+1){
-			    printf(" %6.2f ", *(*((mats[mat_index]->m)+i)+j));
-		    }
-		    printf("\n");
-	    }
-        *ptr_curr = curr;
-    }
-    
+    	mat_index = get_mat(line, &curr, COMMA_NOT_EXPACTED);
+    	if(mat_index >= 0){
+		for(i=0; i < SIZE; i=i+1){
+			for(j=0; j < SIZE; j= j+1){
+				    printf(" %6.2f ", *(*((mats[mat_index]->m)+i)+j));
+			}
+			printf("\n");
+		}
+	printf("\n");
+    	}
+    	*ptr_curr = curr;
 }
 
 
@@ -113,7 +111,7 @@ void sub_mat(char* line , int* ptr_curr){
 }
 
 void mul_mat(char* line , int* ptr_curr){
-    	int curr = *ptr_curr, i, j, k, mat1, mat2, mat3;
+    	int curr = *ptr_curr, i, j, k = 0, mat1, mat2, mat3;
     	char name[MAX_LEN];
 	mat_ptr temp = create_mat();
 	
@@ -124,14 +122,15 @@ void mul_mat(char* line , int* ptr_curr){
     	if(mat1 >= 0 && mat2 >=0 && mat3 >= 0){
         	for(i = 0; i < SIZE; ++i){
             		for(j = 0; j < SIZE; ++j){
-                		for(k = 0; k < SIZE; ++k) {
+            			
+                		for(k = 0; k < SIZE; k++) {
                     			temp->m[i][j] += mats[mat1]->m[i][k] * mats[mat2]->m[k][j];
                 		}
             		}
         	}
         	for(i = 0; i < SIZE; ++i){
             		for(j = 0; j < SIZE; ++j){
-            			mats[mat3]->m[i][j] += temp->m[i][j];
+            			mats[mat3]->m[i][j] = temp->m[i][j];
             		}
             	}
             	
@@ -145,7 +144,7 @@ void mul_scalar(char* line, int *ptr_curr){
     	int curr = *ptr_curr, i , j, mat1, mat2;
     	char num[MAX_LEN];
     	double scalar = 0.0;
-    
+    	
         mat1 = get_mat(line, &curr, COMMA_EXPACTED);
         jump_comma(line, &curr);
         
@@ -159,39 +158,35 @@ void mul_scalar(char* line, int *ptr_curr){
         jump_comma(line, &curr);
         
         mat2 = get_mat(line, &curr, COMMA_NOT_EXPACTED);
-        printf("%d\n", mat2);
+        /* for every variable in the mat - mult with the scalar. */
         if(mat1 >= 0 && mat2 >=0){
             for(i = 0; i < SIZE; i++){
                 for(j = 0; j < SIZE; j++){
                     mats[mat2]->m[i][j] = scalar*mats[mat1]->m[i][j];
                 }
             }
-            
             *ptr_curr = curr;
         }
-    
-
-    
 }
 
 void trans_mat(char* line , int* ptr_curr){
     int curr = *ptr_curr, i, j, mat1, mat2;
-    double temp;
+    double temp; /* for swaping */
+    /* get the index of the matrix */
     mat1 = get_mat(line, &curr, COMMA_EXPACTED);
     mat2 = get_mat(line, &curr, COMMA_NOT_EXPACTED);
     
     if(mat1 >= 0 && mat2 >=0){
-        
         for(i = 0; i <SIZE; i++) {
-            for (j = i; j < SIZE; j++){
+            for (j = i; j < SIZE; j++)
+            {
                 temp = mats[mat1]->m[j][i];
                 mats[mat1]->m[j][i] = mats[mat2]->m[i][j];
                 mats[mat2]->m[i][j] = temp;
             }
-        }
-        
-        *ptr_curr = curr;
+        } 
     }
+    *ptr_curr = curr;
 }
 
 void stop(char* line , int* ptr_curr){
@@ -199,10 +194,10 @@ void stop(char* line , int* ptr_curr){
 	for(i = 0; i < NUM_OF_MATS; i++){
 		free_mat(mats[i]);
 	}
-	
 	printf("\n---End-Of-Culc---\n");
 	exit(0);
 }
+
 
 
 /********** start-func *************/
@@ -237,6 +232,7 @@ mat_ptr create_mat(){
 
 void generate_mats(){
     int i, j;
+    /* for each mats in the array - create mat and allocate space */
     for(i = 0; i < NUM_OF_MATS; i++){
             mats[i] = create_mat();
             if(!mats[i]){

@@ -50,17 +50,15 @@ void go_head(char* line ,int *ptr_curr){
 
 void get_next_word(char* line, char word[], int* ptr_curr){
     	int curr = *ptr_curr, j; 
-    
-    	go_head(line, &curr);
+    	go_head(line, &curr);/* move pointer to next non-white char */
 
 	for(j = 0; !isspace(line[curr]) && line[curr] != '\n' && line[curr] != ','; curr++){
 	        word[j++] = line[curr];
 	}
 		
 	word[j] = '\0';
-
+	/*move pointer to the next non-white char */
 	go_head(line, &curr);
-
 	*ptr_curr = curr; 
 }
 
@@ -69,17 +67,15 @@ int check_comma(char* line, int *ptr_curr){
     	go_head(line, &curr);
     	if(line[curr] == ',')
 	    	comma = 1;
-
     	return comma;
 }
 
 
 void jump_comma(char* line, int *ptr_curr){
     	int curr = *ptr_curr;
-    	go_head(line, &curr);
+    	go_head(line, &curr); /* search for non wihite character. */
 	if(line[curr] == ',')
 	    	curr++;
-	
 	go_head(line, &curr);
 	*ptr_curr = curr;
 }
