@@ -58,6 +58,7 @@ void print_mat(char* line, int* ptr_curr){
     	char name[MAX_LEN];
     
     	mat_index = get_mat(line, &curr, COMMA_NOT_EXPACTED);
+	/* if mat_index < 0 so there is a problem in get mat func . */
     	if(mat_index >= 0){
 		for(i=0; i < SIZE; i=i+1){
 			for(j=0; j < SIZE; j= j+1){
