@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "files.h"
 #include "error.h"
 #include "parser.h"
 #include "list_handling.h"
+#include "pre_asm.h"
 
 
 FILE* open_file(const char* file_name, char* ending, char* mode)
@@ -22,7 +24,6 @@ FILE* open_file(const char* file_name, char* ending, char* mode)
 		exit(EXIT_FAILURE);
 	}
 	return file_p;
-	
 }
 
 
@@ -48,6 +49,10 @@ char* get_full_file_name(const char* file_name, char* ending)
 }
 
 
+
+
+
+
 void handle_file(const char* file_name, char* mode)
 {
 	char line[LINE_LEN];
@@ -58,12 +63,14 @@ void handle_file(const char* file_name, char* mode)
 		fatal_error(ErrorMemoryAlloc);
 
 	strcpy(parser_data.nameOfFile, file_name);
+	printf("%s\n", parser_data.nameOfFile);
+	pre_assembler();
+	/*Debug*/
+	printf("END");
+	exit(0);
 	
-	/*
-	*	Here should be pre assembler
-	*	and re-open the new file.
-	*/
-	parser_data.file = open_file(parser_data.nameOfFile, MainFileEnding ,ReadFile);
+	printf("after pre_asm--> %s\n",parser_data.nameOfFile);/**/
+	parser_data.file = open_file(parser_data.nameOfFile, AfterMacroEnding ,ReadFile);
 	
 	/*until pase 11 */
 	while(fgets(line, LINE_LEN, parser_data.file)){

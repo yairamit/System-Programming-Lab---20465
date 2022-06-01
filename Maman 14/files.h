@@ -1,11 +1,13 @@
 #ifndef FILES_H_
 #define FILES_H_
 
+#include <stdlib.h>
 
 #define AdditionalChars 4
 #define LINE_LEN 81
 
 #define MainFileEnding ".as"
+#define AfterMacroEnding ".am"
 #define ObjectFileEnding ".ob"
 #define ExternFileEnding ".ext"
 #define EntryFileEnding ".ent"

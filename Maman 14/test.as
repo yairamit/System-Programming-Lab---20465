@@ -1,6 +1,10 @@
 MAIN:	mov S1.1 ,LENGTH
 	add r2,STR
 LOOP:	jmp END
+	macro m1
+		inc r2
+		mov A, r1
+	endmacro
 	prn #-5
 	sub r1, r4
 	inc K

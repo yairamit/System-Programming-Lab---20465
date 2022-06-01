@@ -71,19 +71,19 @@ void jump_comma(char* line, int *ptr_curr)
 }
 
 
-void get_next_word(char* line, char* word, int* ptr_curr)
-{
+void get_next_word(char* line, char* word, int* ptr_curr){
 	
-	int curr = *ptr_curr, j; 
+int curr = *ptr_curr, j;	
     	forward(line, &curr);
 
 	for(j = 0; !isspace(line[curr]) && line[curr] != '\n' && line[curr] != ','; curr++)
 		word[j++] = line[curr];
 	word[j] = '\0';
-	
+
 	forward(line, &curr);
 	*ptr_curr = curr; 
 }
+
 
 void call_func_to_11(char* line, int l_cnt)
 {
@@ -106,15 +106,15 @@ void parse_line(char* line)
 	
 	puts(line); /*Debag*/
 	
-	/* comment line */
+	/* not comment line */
 	if(line[curr] != '\n' && line[curr] != ";")
 	{
+		parser_data.line_number++;
 		get_next_word(line, first_word, &curr);
 		
 		/* check if there's a label */
 		if(first_word[strlen(first_word)-1] == ':')
-		{
-			
+		{	
 			label_flag = 1; /*4*/
 			
 			first_word[strlen(first_word)-1] = '\0';
@@ -122,33 +122,34 @@ void parse_line(char* line)
 			/* TODO - another func to handle lable. */
 			
 			get_next_word(line, sec_word ,&curr);
-			if(sec_word[0] == '.')
-			{ /*5*/
-				add_label_to_list(parser_data.Shead, first_word, parser_data.IC, 0, 0);
-				parse_data(line, &curr);
+			if(sec_word[0] == '.') { /*5*/
+				add_label_to_list(parser_data.Shead, first_word, parser_data.IC++, dataLine, 0);
+				parse_data(line, sec_word ,&curr);
 			}
-			else 
-			{
+			else {
 				/* calc before adding the label into the symbol table.*/
-				add_label_to_list(parser_data.Shead, first_word, parser_data.IC, 1, 0);
+				add_label_to_list(parser_data.Shead, first_word, parser_data.IC++, InstructionLine, 0);
 				parse_instruction(line, sec_word,&curr);
 			}
-		/* TODO - else if to another word  - no command.. */
 		
 		} else if(line[0] == '.'){/*8*/
 			if(strcmp(first_word, ".extern") == 0) 
 			{ /*9*/
-				printf("?\n");
+				printf("in extern\n");
 				/* add all label in ext line. for now its only 1 label per extern command.
 				while(curr < LINE_LEN){
 					get_next_word(line, sec_word ,&curr);
 					if(sec_word != NULL)
 						add_label_to_list(symbols, first_word, 0, 0, 1);
-				// its have problem becouse its try to add clank label to list.
+				// its have problem becouse its try to add blank label to list.
 			*/}
 			get_next_word(line, sec_word ,&curr);
-				add_label_to_list(parser_data.Shead, sec_word, 0, 0, 1);
+			add_label_to_list(parser_data.Shead, sec_word, 0, 0, 1);
+		} else {
+			/* TODO - else if to another word  - no command.. */
+			parse_instruction(line, first_word, &curr);
 		}
+		
 		/* free memory */
 		free(sec_word);
 		free(first_word);
@@ -156,7 +157,7 @@ void parse_line(char* line)
 }
 
 
-void parse_data(char* line,int *ptr_curr)
+void parse_data(char* line, char* sec_word, int *ptr_curr)
 {
 	int curr = *ptr_curr, count = 0,i;
 	char* data = (char*)malloc(sizeof(char)* LINE_LEN);
@@ -164,14 +165,13 @@ void parse_data(char* line,int *ptr_curr)
 		fatal_error(ErrorMemoryAlloc);
 		
 	get_next_word(line, data, &curr);
-	for(i = 0; i < strlen(data); i++)
-	{
-		if(isalnum(data[i]))
+	for(i = 0; i < strlen(data); i++) {
+		if(isalnum(data[i]) || data[i] == '.' || data[i] == '-') /* for the-" */
 			count++;
 	}
 	
 	parser_data.IC += count;
-	parser_data.DC = parser_data.IC;
+	parser_data.DC += count;
 	*ptr_curr = curr;
 	free(data);
 }
@@ -183,28 +183,25 @@ void parse_instruction(char* line, char* command_name,int* ptr_curr)
 	
 	for(i = 0; i < 16; i++) /*define 16!!*/
 	{
-		if(!strcmp(command_name, cmds[i].name))
-		{
+		if(!strcmp(command_name, cmds[i].name)) {
 			break;
 		}
 	}
-	if(i == 16)
-	{
-		error_log(InvalidCommand, parser_data.IC);
+	if(i == 16) {
+		error_log(InvalidCommand, parser_data.line_number);
 		return;
-	}
-	else
-	{
-		for(j = 0; j < cmds[i].numOfOperands; j++)
-		{
-			/*int op_kind = parse_operands(line, cmds[i].name , &curr);*/
-			printf("2\n");
+	} else {
+		for(j = 0; j < cmds[i].numOfOperands; j++) {
+			/*int op_kind = parse_operands(line, cmds[i].name , &curr);   TODO  -- saterday  */
 			
 		}
 		parser_data.IC += (cmds[i].numOfOperands+1);
 	}
 	*ptr_curr = curr;
 }
+
+
+
 
 void setParserData(){
 	parser_data.DC = 0;

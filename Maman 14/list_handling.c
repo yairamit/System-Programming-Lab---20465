@@ -31,8 +31,12 @@ void add_label_to_list(label_list* list, char* label, int ic, int insOrData, int
 		
 		while(1){
 			
-			if(!strcmp(new_label->label, curr->label))
-				fatal_error("Label Already Exist");
+			if(!strcmp(new_label->label, curr->label)){
+				puts(new_label->label);
+					if(new_label->ext == 0)
+						fatal_error("Label Already Exist ");
+				
+			}
 			
 			else if(curr->next == NULL){
 				curr->next = new_label;

@@ -1,7 +1,10 @@
 #ifndef ITEM_LIST_HANDLING_H
 #define ITEM_LIST_HANDLING_H
 
-#define MAX_LEN_OF_LABEL 128
+#define MAX_LEN_OF_LABEL 81
+#define LINE_LEN 81
+
+
 
 typedef struct Node {
 	char label[MAX_LEN_OF_LABEL]; /* the name (in String) of the symbol */
@@ -15,6 +18,9 @@ typedef struct Node {
 typedef struct List {
 	label_node* head;
 } label_list;
+
+
+
 
 /*
 * create symbol table and return the head of the list.

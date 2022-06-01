@@ -1,5 +1,5 @@
-asm: main.o error.o list_handling.o files.o parser.o
-	gcc -o asm main.o error.o list_handling.o files.o parser.o
+asm: main.o error.o list_handling.o files.o parser.o pre_asm.o
+	gcc -o asm main.o error.o list_handling.o files.o parser.o pre_asm.o
 
 
 main.o: main.c parser.h list_handling.h error.h files.h
@@ -12,4 +12,5 @@ error.o: error.h
 	gcc -c -ansi -Wall -pedantic error.c
 files.o: files.h error.h list_handling.h
 	gcc -c -ansi -Wall -pedantic files.c
-
+pre_asm.o: pre_asm.h
+	gcc -c -ansi -Wall -pedantic pre_asm.c
