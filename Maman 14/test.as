@@ -10,6 +10,7 @@ LOOP:	jmp END
 	inc K
 	mov S1.2 ,r3
 	bne LOOP
+	m1
 END:	hlt
 STR:	.string "abcdef"
 LENGTH:	.data 6,-9,15
