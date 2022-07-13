@@ -1,11 +1,12 @@
 #ifndef ITEM_LIST_HANDLING_H
 #define ITEM_LIST_HANDLING_H
 
+
 #define MAX_LEN_OF_LABEL 81
 #define LINE_LEN 81
 
 
-
+/* list for round 1 */
 typedef struct Node {
 	char label[MAX_LEN_OF_LABEL]; /* the name (in String) of the symbol */
 	int ic; /* address of the symbol */
@@ -21,6 +22,31 @@ typedef struct List {
 } label_list;
 
 
+
+
+typedef struct {
+	unsigned int opcode :4;
+	unsigned int target :2;
+	unsigned int source :2;
+	unsigned int are :1;
+} MachineCodeBits;
+
+
+
+
+/* list for round 2 */
+typedef struct DataNode {
+	int decimal_address;
+	MachineCodeBits machine_code;
+	char* base32;
+	int operation_num;
+	unsigned int is_instruction :1;
+	struct DataNode* next;
+} LineData;
+
+typedef struct DataList {
+	LineData* head;
+} LineData_list;
 
 
 /*

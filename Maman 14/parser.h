@@ -16,12 +16,16 @@ typedef struct {
 	char* nameOfFile;
 	FILE* file;
 	/* Command and data counters. */
+	int ent_flag;
+	int ext_flag;
 	int line_number;
 	unsigned int IC;
 	unsigned int DC;
 } ParserData;
 
 ParserData parser_data;
+
+
 
 
 
@@ -63,7 +67,7 @@ void parse_instruction(char* , char* ,int* );
 * count ic and check valid command and operands.
 */
 void parse_data(char* , char* , char* ,int* );
-int parse_operands(char* line, int i, int* ptr_curr);
+void parse_extern(char* line, int* ptr_curr);
 void call_func_to_11(char* line, int l_cnt);
 void setParserData();
 void freeParserData();

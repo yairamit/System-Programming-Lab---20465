@@ -99,7 +99,7 @@ void parse_line( char* line)
 
 	if(!first_word || !sec_word)
 		fatal_error(ErrorMemoryAlloc);
-	printf("ic = %d\n", parser_data.IC);
+	printf("ic = %d\n", parser_data.IC); /* debug*/
 	puts(line); /*Debag*/
 	
 	if (line[curr] != '\n' && line[curr] != ";") /* check comment line */
@@ -109,7 +109,6 @@ void parse_line( char* line)
 		/* check if lebel */
 		if (first_word[strlen(first_word)-1] == ':')
 		{
-			printf("**\n");
 			label_flag = 1;
 			first_word[strlen(first_word)-1] = '\0';
 			
@@ -117,6 +116,7 @@ void parse_line( char* line)
 			if (sec_word[0] == '.') /*check if data line data ,struct, string*/
 			{
 				parse_data(line, first_word, sec_word ,&curr); /*TODO - check if string, extern ect..*/
+				label_flag = 0;
 			}
 			else
 			{
@@ -126,11 +126,24 @@ void parse_line( char* line)
 		}
 		else if (first_word[0] == '.') /* extern / entry line */
 		{
+			if (strcmp(first_word, ".extern")==0) 
+			{
+				printf("extern\n");
+				parser_data.ext_flag = 1;
+				parse_extern(line, &curr);
+			}
+			if (strcmp(first_word, ".entry")==0) 
+			{
+				printf("entry\n");
+				parser_data.ent_flag = 1;
+				
+			}
 			/*parse_data(line, first_word, NULL ,&curr);*/
 		}
 		else /* instruction line. */
 		{
 			parse_instruction(line, first_word, &curr);
+			
 		}
 		
 		/* free memory */
@@ -161,6 +174,23 @@ void parse_data(char* line, char* first_word, char* sec_word, int *ptr_curr)
 	free(data);
 }
 
+void parse_extern(char* line, int* ptr_curr)
+{
+	printf("in extern:\n");
+	int curr = *ptr_curr;
+	char* label = (char*)malloc(sizeof(char)* LINE_LEN);
+	if(!label)
+		fatal_error(ErrorMemoryAlloc);
+		
+	while (line[curr] != '\n' && line[curr] != '\0') {
+		get_next_word(line, label, &curr);
+		add_label_to_list(parser_data.Shead, label, parser_data.DC, dataLine, 1, label);
+	}
+	*ptr_curr = curr;
+	
+	
+}
+
 
 void parse_instruction(char* line, char* command_name,int* ptr_curr)
 {
@@ -177,31 +207,20 @@ void parse_instruction(char* line, char* command_name,int* ptr_curr)
 		error_log(InvalidCommand, parser_data.line_number);
 		return;
 	} else {
-		for(j = 0; j < cmds[i].numOfOperands; j++) {
-			
-			/*parse_operands(line, cmds[i].name , &curr);*/
-		}
+		for(j = 0; j < cmds[i].numOfOperands; j++)
+		{/*
+			if (cmds[i].numOfOperands > 0)
+			{
+				char* p = strchr(line, '.');
+				if (p != NULL)
+					parser_data.IC++;
+			}
+		*/}
 		parser_data.IC += (cmds[i].numOfOperands+1);
 	}
 	*ptr_curr = curr;
 }
 
-
-int parse_operands(char* line, int i, int* ptr_curr) 
-{
-	int curr = *ptr_curr;
-	char op[cmds[i].numOfOperands][LINE_LEN];
-	int L = (cmds[i].numOfOperands+1);
-	
-	if (cmds[i].numOfOperands > 0)
-	{
-		char* p = strchr(line, '.');
-		if (p != NULL)
-			L++;
-	}
-	printf("* L=%d\n", L);
-	parser_data.IC += L;
-}
 
 
 

@@ -22,6 +22,7 @@ void add_label_to_list(label_list* list, char* label, int ic, int insOrData, int
 	new_label->instructionOrData = insOrData;
 	new_label->ext = ext;
 	new_label->next = NULL;
+	
 	if (data != NULL)
 		strcpy(new_label->data_label, data);
 	
