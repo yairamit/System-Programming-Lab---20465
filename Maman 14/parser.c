@@ -4,29 +4,31 @@
 #include <stdlib.h>
 #include "error.h"
 #include "parser.h"
+#include "files.h"
 #include "list_handling.h"
 
 struct {
 	char* name;
 	int numOfOperands;
+	unsigned int opcode:4;
 	
 } cmds[] = {
-	{"mov", 2},
-	{"cmp", 2},
-	{"add", 2},
-	{"sub", 2},
-	{"not", 1},
-	{"clr", 1},
-	{"lea", 2},
-	{"inc", 1},
-	{"dec", 1},
-	{"jmp", 1},
-	{"bne", 1},
-	{"get", 1},
-	{"prn", 1},
-	{"jsr", 1},
-	{"rts", 0},
-	{"hlt", 0},
+	{"mov", 2, 0000},
+	{"cmp", 2, 0001},
+	{"add", 2, 0010},
+	{"sub", 2, 0011},
+	{"not", 1, 0100},
+	{"clr", 1, 0101},
+	{"lea", 2, 0110},
+	{"inc", 1, 0111},
+	{"dec", 1, 1000},
+	{"jmp", 1, 1001},
+	{"bne", 1, 1010},
+	{"get", 1, 1011},
+	{"prn", 1, 1100},
+	{"jsr", 1, 1101},
+	{"rts", 0, 1110},
+	{"hlt", 0, 1111},
 
 };
 
@@ -87,8 +89,11 @@ int curr = *ptr_curr, j;
 
 void call_func_to_11(char* line, int l_cnt)
 {
-	puts(line);
-	
+	if (parser_data.ext_flag != 0) {
+	/* skelton for ext print*/
+		FILE* ext_file = open_file(parser_data.nameOfFile, ExternFileEnding, WirtingToFile);
+		fclose(ext_file);
+	}
 }
 
 void parse_line( char* line)
@@ -124,11 +129,10 @@ void parse_line( char* line)
 				parse_instruction(line, sec_word,&curr);
 			}
 		}
-		else if (first_word[0] == '.') /* extern / entry line */
+		else if (first_word[0] == '.') /* extern or entry line */
 		{
 			if (strcmp(first_word, ".extern")==0) 
 			{
-				printf("extern\n");
 				parser_data.ext_flag = 1;
 				parse_extern(line, &curr);
 			}
@@ -136,11 +140,13 @@ void parse_line( char* line)
 			{
 				printf("entry\n");
 				parser_data.ent_flag = 1;
+				/*parse_entry(line, &curr);*/
 				
 			}
 			/*parse_data(line, first_word, NULL ,&curr);*/
 		}
-		else /* instruction line. */
+		/* instruction line. */
+		else 
 		{
 			parse_instruction(line, first_word, &curr);
 			
@@ -176,13 +182,13 @@ void parse_data(char* line, char* first_word, char* sec_word, int *ptr_curr)
 
 void parse_extern(char* line, int* ptr_curr)
 {
-	printf("in extern:\n");
 	int curr = *ptr_curr;
 	char* label = (char*)malloc(sizeof(char)* LINE_LEN);
 	if(!label)
 		fatal_error(ErrorMemoryAlloc);
-		
-	while (line[curr] != '\n' && line[curr] != '\0') {
+	
+	while (line[curr] != '\n' && line[curr] != '\0')
+	{
 		get_next_word(line, label, &curr);
 		add_label_to_list(parser_data.Shead, label, parser_data.DC, dataLine, 1, label);
 	}
@@ -216,6 +222,7 @@ void parse_instruction(char* line, char* command_name,int* ptr_curr)
 					parser_data.IC++;
 			}
 		*/}
+		 
 		parser_data.IC += (cmds[i].numOfOperands+1);
 	}
 	*ptr_curr = curr;
