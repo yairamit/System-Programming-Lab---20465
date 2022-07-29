@@ -2,7 +2,7 @@
 #define PARSER_H_
 
 #include <stdlib.h>
-#include "list_handling.h"
+#include "lists.h"
 #define LINE_LEN 81
 #define NUM_OF_COMMANDS 16
 
@@ -12,13 +12,14 @@ enum { dataLine, InstructionLine };
 
 typedef struct {
 	label_list* Shead; /* Head of symbol table */
-	unsigned int err_count;
-	char* nameOfFile;
+	LineData_list* Dhead; /* Head of data table */
+	int err_count;	/**/
+	char* nameOfFile; /**/
 	FILE* file;
 	/* Command and data counters. */
 	int ent_flag;
 	int ext_flag;
-	int line_number;
+	int line_num;
 	unsigned int IC;
 	unsigned int DC;
 } ParserData;

@@ -38,7 +38,7 @@ void generate_macro_lists()
 }
 
 
-void add_to_list(macro_list* list, macro_line* node) /*TODO conect 2 func of add_to_list from lists handling */
+void add_to_macro_list(macro_list* list, macro_line* node) /*TODO conect 2 func of add_to_list from lists handling */
 {
 	if(list->head == NULL)
         	list->head = node;
@@ -109,7 +109,7 @@ void get_macro_lines(macro_list* list , FILE* fp)
 				macro_line* node = (macro_line*)malloc(sizeof(macro_line));
 				if(node) {
 					strcpy(node->l, line);
-					add_to_list(list, node);
+					add_to_macro_list(list, node);
 				}
 			}
 			else {

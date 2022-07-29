@@ -4,7 +4,7 @@
 #include "files.h"
 #include "error.h"
 #include "parser.h"
-#include "list_handling.h"
+#include "lists.h"
 #include "pre_asm.h"
 
 
@@ -68,8 +68,9 @@ void handle_file(const char* file_name, char* mode)
 	parser_data.file = open_file(parser_data.nameOfFile, AfterMacroEnding ,ReadFile);
 	
 	/*until pase 11 */
+	/* read line by line and send the char[] to parser. */
 	while(fgets(line, LINE_LEN, parser_data.file)){
-		parser_data.line_number++;
+		parser_data.line_num++;
 		parse_line(line);
 	}
 	
