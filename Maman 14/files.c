@@ -75,7 +75,12 @@ void handle_file(const char* file_name, char* mode)
 	}
 	
 	printf("End of first round of the asm.\n\n");
+
 	print_label_table(parser_data.Shead);
+	printf("\n\n");
+	print_debbug_data(parser_data.Dhead);
+
+
 	fseek(parser_data.file, 0, SEEK_SET); /* set pointer to the start of file. */
 	/*part 2 of first move.*/
 	

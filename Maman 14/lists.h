@@ -5,14 +5,14 @@
 #define MAX_LEN_OF_LABEL 81
 #define LINE_LEN 81
 
-typedef enum typeOfLabel { INSTRUCTION , DATA , EXTERN , ENTRY }; /* type of assembly line*/
+typedef enum typeOfLabel {DATA, INSTRUCTION , STRUCT, STRING , EXTERN , ENTRY }; /* type of assembly line*/
 
-
+typedef enum typeOfData {BITS, WORD}; 
 
 typedef struct LabelNode {
 	char label[MAX_LEN_OF_LABEL]; 	/* the name (in String) of the symbol */
 	unsigned int address; 		/* address of the symbol */
-	int labelType; 			/* 1 for instruction, 0 for data */
+	int labelType;			/* 1 for instruction, 0 for data */
 	char data_label[81]; 		/*hold the nums or letters.*/
 	struct LabelNode* next;
 } label_node;
@@ -32,14 +32,18 @@ typedef struct {
 	unsigned int ARE :2;
 } MachineCodeBits;
 
-
-
+typedef union {
+	MachineCodeBits bits;	/* 1 */
+	unsigned int word :10;	/* 2 */
+} MachineCodeWord;
 
 
 typedef struct DataNode {
 	int address;
-	MachineCodeBits mc;
+	MachineCodeWord mc;
+	int type;
 	struct DataNode* next;
+	struct DataNode* prev;
 } LineData;
 
 typedef struct DataList {
@@ -55,8 +59,8 @@ LineData_list* create_data_list();
 /*
 * build new label node and fill it with data, 
 */
-void add_label_to_list(label_list* list, char* label, int _address, int _type, char* data);
-void add_data_to_list(LineData_list* list, int _address, MachineCodeBits _machine);
+void add_label_to_list(label_list* list, char* label, int _address, int _type);
+void add_data_to_list(LineData_list* list, int _address, MachineCodeWord _machine, int _type);
 /*
 * print the node in format.
 */

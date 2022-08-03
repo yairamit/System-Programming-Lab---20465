@@ -2,6 +2,7 @@
 #define FILES_H_
 
 #include <stdlib.h>
+#include "parser.h"
 
 #define AdditionalChars 4
 #define LINE_LEN 81

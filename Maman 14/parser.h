@@ -30,48 +30,36 @@ ParserData parser_data;
 
 
 
-/*
-* Jump over white characters and lines.
-*/
-void forward(char* line ,int *ptr_curr);
+int is_register(char* op);
+int is_direct(char* op);
+int is_labelA(char* op);
+int is_imidiate (char* op);
 
-/*
-* extruct the next word from the line.
-*/
-void get_next_word(char* line, char* word, int* ptr_curr);
 
-/*
-* check if there is a comma .
-* the func won't move the 'curr' pointer.
-* return int as boolean flag.
-*/
-int check_comma(char* line, int *ptr_curr);
-
-/*
-* jump over comma and white chars.
-* should came after 'check comma' method.
-*/
-void jump_comma(char* line, int *ptr_curr);
-
-/*
-* first parse of the assembler.
-* check ic and dc counters, add symbol to table and looking for bugs in the inputs.
-*/
-void parse_line(char* line);
-
-/*
-* count dc and ic for label line with .data or .string.
-*/
-void parse_instruction(char* , char* ,int* );
-
-/*
-* count ic and check valid command and operands.
-*/
-void parse_data(char* , char* , char* ,int* );
-void parse_extern(char* line, int* ptr_curr);
-void call_func_to_11(char* line, int l_cnt);
 void setParserData();
 void freeParserData();
+
+
+parse_operand(char* line, int commandIndex, int* ptr, int opNumber);
+int check_num_of_operands(char* line, int command_num, int* ptr);
+handle_instruction(char* line,char* command, int* ptr);
+int parse_command(char* line,char* command, int* ptr_curr);
+parse_extern(char* line, int* ptr);
+
+
+int get_next_number(char* line, int* ptr_curr);
+void handle_string(char* line, char* str, int *ptr);
+void handle_data(char* line, char* str,  int *ptr);
+void handle_struct(char* line, char* str,  int *ptr);
+void parse_data(char* line, char* sec, int *ptr);
+
+
+void parse_line( char* line);
+void call_func_to_11(char* line, int l_cnt);
+void get_next_word(char* line, char* word, int* ptr_curr);
+void jump_comma(char* line, int *ptr_curr);
+int check_comma(char* line, int *ptr_curr);
+void forward(char* line ,int *ptr_curr);
 
 
 #endif

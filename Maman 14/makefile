@@ -10,7 +10,7 @@ lists.o: lists.h
 	gcc -c -ansi -Wall -pedantic lists.c
 error.o: error.h
 	gcc -c -ansi -Wall -pedantic error.c
-files.o: files.h error.h lists.h
+files.o: files.h error.h lists.h parser.h
 	gcc -c -ansi -Wall -pedantic files.c
 pre_asm.o: pre_asm.h
 	gcc -c -ansi -Wall -pedantic pre_asm.c
