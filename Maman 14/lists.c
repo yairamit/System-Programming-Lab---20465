@@ -17,7 +17,7 @@ LineData_list* create_data_list() {
     return list;
 }
 
-void add_data_to_list(LineData_list* list, int _address, MachineCodeWord _machine, int _type)
+void add_data_to_list(LineData_list* list, int _address, MachineCodeWord _machine, int _type, int _forSec)
 {
 	LineData* node = (LineData*)malloc(sizeof(LineData));
 	if (node != NULL)
@@ -26,7 +26,8 @@ void add_data_to_list(LineData_list* list, int _address, MachineCodeWord _machin
 		node->mc = _machine;
 		node->type = _type;
 		node->next = NULL;
-		
+		node->forSec = _forSec;
+
 		if(list->head == NULL)
         		list->head = node;
         	else {
@@ -140,3 +141,38 @@ void deleteListData(LineData_list* list)
 		p = list->head;
 	}	
 }
+
+/*********************************************************/
+
+/* fill the next label in data-list with his address. */
+void refill_data_node(LineData_list* list, int val)
+{
+    LineData* p = list->head;
+    
+    while(p){
+        if(p->forSec == 1){
+            MachineCodeWord _mc;
+            _mc.word = val;
+            p->mc = _mc;
+            p->forSec = 0;
+        }
+        p = p->next;
+    };
+}
+/* search if word is label  - move to list.c */
+check_label(label_list* list, char* word)
+{
+    label_node* p = list->head;
+    /*
+    TODO - add check '.' in word and handle it. 
+    */
+    while(p){
+        if(!strcmp(word, p->label)){
+            puts(word);
+            return p->address;
+        }
+        p = p->next;
+    };
+    return 0;
+}
+/******************************************************/

@@ -87,7 +87,7 @@ void handle_file(const char* file_name, char* mode)
 	while(fgets(line, LINE_LEN,parser_data.file)){
 		call_func_to_11(line, 0);/*TODO - change name*/
 	}
-	
+	print_debbug_data(parser_data.Dhead);
 	
 	fclose(parser_data.file);
 }

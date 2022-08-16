@@ -34,7 +34,7 @@ typedef struct {
 
 typedef union {
 	MachineCodeBits bits;	/* 1 */
-	unsigned int word :10;	/* 2 */
+	signed int word :10;	/* 2 */
 } MachineCodeWord;
 
 
@@ -42,8 +42,8 @@ typedef struct DataNode {
 	int address;
 	MachineCodeWord mc;
 	int type;
+	int forSec;
 	struct DataNode* next;
-	struct DataNode* prev;
 } LineData;
 
 typedef struct DataList {
@@ -60,7 +60,7 @@ LineData_list* create_data_list();
 * build new label node and fill it with data, 
 */
 void add_label_to_list(label_list* list, char* label, int _address, int _type);
-void add_data_to_list(LineData_list* list, int _address, MachineCodeWord _machine, int _type);
+void add_data_to_list(LineData_list* list, int _address, MachineCodeWord _machine, int _type, int _forSec);
 /*
 * print the node in format.
 */
@@ -77,4 +77,7 @@ void print_debbug_data(LineData_list* list);
 void deleteList(label_list* list);
 void deleteListData(LineData_list* list);
 
+
+void refill_data_node(LineData_list* list, int val);
+int check_label(label_list* list, char* word);
 #endif 
