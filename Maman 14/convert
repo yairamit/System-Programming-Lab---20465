@@ -1,0 +1,46 @@
+char numbers[32]={'!','@','#','$','%','^','&','*','<','>','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v'};
+
+
+
+****************************************
+Here you shuold use the machineCode Word
+
+****************************
+convert(binToDec(binary_num));
+
+*********************************
+
+
+
+
+
+int convert(int num){
+ int first_digit, second digit;
+   if(num<32){
+   
+      first_digit=numbers[0];
+       second_digit=numbers[num]);
+       }
+    else if(num>=32){
+        first_digit=numbers[num/32]);
+    
+     second_digit=numbers[num%32]);
+    } 
+       
+    
+        
+    
+}
+int binToDec(int binary_num){
+          int decimal_num = 0, base = 1, rem;
+           while ( binary_num > 0)  
+    {  
+        rem = binary_num % 10; /* divide the binary number by 10 and store the remainder in rem variable. */  
+        decimal_num = decimal_num + rem * base;  
+       
+       binary_num = binary_num / 10; // divide the number with quotient  
+        base = base * 2;  
+    }  
+    
+    return decimal_num;
+      }
