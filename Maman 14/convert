@@ -1,0 +1,39 @@
+char numbers[32]={'!','@','#','$','%','^','&','*','<','>','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v'};
+
+
+
+****************************************
+Here you shuold use the machineCode Word
+
+****************************
+convert(binToDec(binary_num));
+
+*********************************
+
+
+
+
+
+int convert(int num){
+    if(num<32)
+        printf ( "0");
+    else if(num>32)
+        printf("%c",numbers[num/32]);
+    
+     printf("%c",numbers[num%32]);
+        
+    
+}
+int binToDec(int binary_num){
+          int decimal_num = 0, base = 1, rem;
+           while ( binary_num > 0)  
+    {  
+        rem = binary_num % 10; /* divide the binary number by 10 and store the remainder in rem variable. */  
+        decimal_num = decimal_num + rem * base;  
+       
+       binary_num = binary_num / 10; // divide the number with quotient  
+        base = base * 2;  
+    }  
+    printf ( " The number is is %d \n",  decimal_num); // print the binary number
+    return decimal_num;
+      }
